@@ -30,39 +30,54 @@ namespace InvoiceTotal
 
         private void btnCalculate_Click(object sender, EventArgs e)
         {
-            decimal subtotalEntry = Convert.ToDecimal(txbEnterSubtotal.Text);
-            decimal discountPercent = 0m;
-            if (subtotalEntry >= 500)
-            {
-                discountPercent = 0.2m;
+            try {
+                if(txbEnterSubtotal.Text == "")
+                {
+                    MessageBox.Show("Subtotal value is required.", "Required Value");
+                    txbEnterSubtotal.Focus();
+                }
+                decimal subtotalEntry = Convert.ToDecimal(txbEnterSubtotal.Text);
+                decimal discountPercent = 0m;
+                if (subtotalEntry >= 500)
+                {
+                    discountPercent = 0.2m;
+                }
+                else if (subtotalEntry >= 250 && subtotalEntry < 500)
+                {
+                    discountPercent = .15m;
+                }
+                else if (subtotalEntry >= 100 && subtotalEntry < 250)
+                {
+                    discountPercent = .1m;
+                }
+
+                decimal discountAmount = subtotalEntry * discountPercent;
+                decimal total = subtotalEntry - discountAmount;
+
+                txbSubtotal.Text = subtotalEntry.ToString("C");
+                txbDscntPct.Text = discountPercent.ToString("p1");
+                txbDscntAmnt.Text = discountAmount.ToString("c");
+                txbTotal.Text = total.ToString("c");
+
+                ++numberOfInvoices;
+                txbNumOfInv.Text = numberOfInvoices.ToString();
+                totalOfInvoices += total;
+                txbTotalOfInv.Text = totalOfInvoices.ToString("c");
+                invoiceAverage = totalOfInvoices / numberOfInvoices;
+                txbInvoiceAverage.Text = invoiceAverage.ToString("c2");
+
+                txbEnterSubtotal.Text = "";
+
+                txbEnterSubtotal.Focus();
             }
-            else if(subtotalEntry >= 250 && subtotalEntry < 500)
+            catch (FormatException)
             {
-                discountPercent = .15m;
+                MessageBox.Show("A format exception has occured. Please check the entry.", "Format Error");
             }
-            else if (subtotalEntry >= 100 && subtotalEntry < 250)
+            catch(Exception ex)
             {
-                discountPercent = .1m;
+                MessageBox.Show(ex.Message, ex.GetType().ToString());
             }
-
-            decimal discountAmount = subtotalEntry * discountPercent;
-            decimal total = subtotalEntry - discountAmount;
-
-            txbSubtotal.Text = subtotalEntry.ToString("C");
-            txbDscntPct.Text = discountPercent.ToString("p1");
-            txbDscntAmnt.Text = discountAmount.ToString("c");
-            txbTotal.Text = total.ToString("c");
-
-            ++numberOfInvoices;
-            txbNumOfInv.Text = numberOfInvoices.ToString();
-            totalOfInvoices += total;
-            txbTotalOfInv.Text = totalOfInvoices.ToString("c");
-            invoiceAverage = totalOfInvoices / numberOfInvoices;
-            txbInvoiceAverage.Text = invoiceAverage.ToString("c2");
-
-            txbEnterSubtotal.Text = "";
-
-            txbEnterSubtotal.Focus();
         }
 
         private void btnClearTotals_Click(object sender, EventArgs e)
