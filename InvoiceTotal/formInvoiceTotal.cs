@@ -16,6 +16,8 @@ namespace InvoiceTotal
         int numberOfInvoices = 0;
         decimal totalOfInvoices = 0m;
         decimal invoiceAverage = 0.0m;
+        decimal[] invoice = new decimal[5];
+        int index = 0;
 
         public formInvTotal()
         {
@@ -25,6 +27,14 @@ namespace InvoiceTotal
         
         private void btnExit_Click(object sender, EventArgs e)
         {
+            string invoices = "";
+            Array.Sort(invoice);
+            foreach (var item in invoice)
+            {
+                if(item > 0)
+                    invoices += item + "\n";
+            }
+            MessageBox.Show(invoices, "Order Totals");
             this.Close();
         }
 
@@ -54,6 +64,8 @@ namespace InvoiceTotal
                 decimal discountAmount = subtotalEntry * discountPercent;
                 decimal total = subtotalEntry - discountAmount;
 
+                invoice[index++] = total;
+
                 txbSubtotal.Text = subtotalEntry.ToString("C");
                 txbDscntPct.Text = discountPercent.ToString("p1");
                 txbDscntAmnt.Text = discountAmount.ToString("c");
@@ -73,6 +85,10 @@ namespace InvoiceTotal
             catch (FormatException)
             {
                 MessageBox.Show("A format exception has occured. Please check the entry.", "Format Error");
+            }
+            catch (IndexOutOfRangeException)
+            {
+                MessageBox.Show("You cannot add more than 5 invoices", "Range Error");
             }
             catch(Exception ex)
             {
